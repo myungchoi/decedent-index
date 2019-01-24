@@ -126,6 +126,7 @@ public class DecedentDaoImpl implements DecedentDao {
 			logger.info("decedent data (" + id + ") selected");
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 
 		return decedent;
@@ -168,8 +169,7 @@ public class DecedentDaoImpl implements DecedentDao {
 		return decedents;
 	}
 
-	@Override
-	public void update(Decedent decedent) {
+	protected void updateDecedent(Integer decedentId, Decedent decedent) throws SQLException {
 		String sql = "UPDATE Decedent SET";
 		int index = 1;
 
@@ -212,29 +212,36 @@ public class DecedentDaoImpl implements DecedentDao {
 		int decedentIdIndex = index;
 		index++;
 
-		try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			if (lastNameIndex > 0) {
-				pstmt.setString(lastNameIndex, decedent.getLastName());
-			}
+		Connection conn = this.connect();
+		PreparedStatement pstmt = conn.prepareStatement(sql);
+		if (lastNameIndex > 0) {
+			pstmt.setString(lastNameIndex, decedent.getLastName());
+		}
 
-			if (firstNameIndex > 0) {
-				pstmt.setString(firstNameIndex, decedent.getFirstName());
-			}
+		if (firstNameIndex > 0) {
+			pstmt.setString(firstNameIndex, decedent.getFirstName());
+		}
 
-			if (genderIndex > 0) {
-				pstmt.setString(genderIndex, decedent.getGender());
-			}
+		if (genderIndex > 0) {
+			pstmt.setString(genderIndex, decedent.getGender());
+		}
 
-			if (meOfficeIndex > 0) {
-				pstmt.setString(meOfficeIndex, decedent.getMeOffice());
-			}
+		if (meOfficeIndex > 0) {
+			pstmt.setString(meOfficeIndex, decedent.getMeOffice());
+		}
 
-			if (meCaseNumberIndex > 0) {
-				pstmt.setString(meCaseNumberIndex, decedent.getMeCaseNumber());
-			}
+		if (meCaseNumberIndex > 0) {
+			pstmt.setString(meCaseNumberIndex, decedent.getMeCaseNumber());
+		}
 
-			pstmt.setInt(decedentIdIndex, decedent.getId());
-			pstmt.executeUpdate();
+		pstmt.setInt(decedentIdIndex, decedentId);
+		pstmt.executeUpdate();
+	}
+
+	@Override
+	public void update(Integer decedentId, Decedent decedent) {
+		try {
+			updateDecedent(decedentId, decedent);
 
 			// Now we need to update FHIR sources. We wipe out existing one and reload with
 			// new one.
@@ -250,6 +257,34 @@ public class DecedentDaoImpl implements DecedentDao {
 			logger.info("Decedent (" + decedent.getId() + ") updated with" + decedent.toString());
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
+		}
+	}
+
+	public void merge(Decedent existingDecedent, Decedent newDecedent) {
+		// Merge new to existing decedent.
+		try {
+			updateDecedent(existingDecedent.getId(), newDecedent);
+			List<FhirSource> existingListFhirSources = existingDecedent.getListOfFhirSources();
+			List<FhirSource> newListFhirSources = newDecedent.getListOfFhirSources();
+			for (FhirSource newFhirSource : newListFhirSources) {
+				boolean found = false;
+				for (FhirSource existingFhirSource : existingListFhirSources) {
+					if (newFhirSource.equals(existingFhirSource)) {
+						found = true;
+						break;
+					}
+				}
+
+				if (found == false) {
+					fhirSourceDao.save(existingDecedent.getId(), newFhirSource);
+				}
+			}
+
+			logger.info("Decedent (" + existingDecedent.getId() + ") updated with" + newDecedent.toString());
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 	}
 

@@ -21,8 +21,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-01-23T11:31:00.732213-05:00[America/New_York]")
 @Controller
@@ -60,8 +58,18 @@ public class ManageApiController implements ManageApi {
         if (gender == null || gender.isEmpty()) gender = "unknown";
         
         Decedents res = decedentDao.search(meCaseNumber, meOffice, lastName, firstName, null);
-        if (res.getCount() > 0) 
+        if (res.getCount() > 1) 
         	return new ResponseEntity<Void>(HttpStatus.CONFLICT);
+        
+        if (res.getCount() == 1) {
+        	decedentDao.merge(res.getList().get(0), body);
+			URI location = ServletUriComponentsBuilder.fromCurrentServletMapping().path("/manage/{id}").build()
+					.expand(res.getList().get(0).getId()).toUri();
+			HttpHeaders headers = new HttpHeaders();
+			headers.setLocation(location);
+			
+        	return new ResponseEntity<>(headers, HttpStatus.OK);
+        }
         
         Integer decedentId = decedentDao.save(body);        
 		if (decedentId > 0) {
@@ -97,28 +105,11 @@ public class ManageApiController implements ManageApi {
         String accept = request.getHeader("Accept");
 
         Decedent decedent = decedentDao.getById(id);
-        if (body.getLastName() != null && !body.getLastName().isEmpty()) {
-        	decedent.setLastName(body.getLastName());
+        if (decedent == null) {
+        	return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
         }
-        
-        if (body.getFirstName() != null && !body.getFirstName().isEmpty()) {
-        	decedent.setFirstName(body.getFirstName());
-        }
-        
-        if (body.getGender() != null && !body.getGender().isEmpty()) {
-        	decedent.setGender(body.getGender());
-        }
-        
-        if (body.getMeCaseNumber() != null && !body.getMeCaseNumber().isEmpty()) {
-        	decedent.setMeCaseNumber(body.getMeCaseNumber());
-        }
-        
-        if (body.getMeOffice() != null && !body.getMeOffice().isEmpty()) {
-        	decedent.setMeOffice(body.getMeOffice());
-        }
-        
-        decedent.setListOfFhirSources(body.getListOfFhirSources());
 
+        decedentDao.update(id, body);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
