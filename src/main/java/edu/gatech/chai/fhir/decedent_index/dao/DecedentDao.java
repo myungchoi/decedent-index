@@ -9,7 +9,7 @@ public interface DecedentDao {
 	public Connection connect();
 	
 	public int save(Decedent decedent);
-	public void update(Decedent decedent);
+	public void update(Integer decedentId, Decedent decedent);
 	public void delete(Integer id);
 	public Decedents get();
 	public Decedent getById(Integer id);
