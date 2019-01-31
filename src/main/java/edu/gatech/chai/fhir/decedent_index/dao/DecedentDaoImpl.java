@@ -182,6 +182,7 @@ public class DecedentDaoImpl implements DecedentDao {
 
 		int firstNameIndex = 0;
 		if (decedent.getFirstName() != null && !decedent.getFirstName().isEmpty()) {
+			if (index > 1) sql = sql + ",";
 			sql = sql + " first_name=?";
 			firstNameIndex = index;
 			index++;
@@ -189,6 +190,7 @@ public class DecedentDaoImpl implements DecedentDao {
 
 		int genderIndex = 0;
 		if (decedent.getGender() != null && !decedent.getGender().isEmpty()) {
+			if (index > 1) sql = sql + ",";
 			sql = sql + " gender=?";
 			genderIndex = index;
 			index++;
@@ -196,6 +198,7 @@ public class DecedentDaoImpl implements DecedentDao {
 
 		int meOfficeIndex = 0;
 		if (decedent.getMeCaseNumber() != null && !decedent.getMeCaseNumber().isEmpty()) {
+			if (index > 1) sql = sql + ",";
 			sql = sql + " me_office=?";
 			meOfficeIndex = index;
 			index++;
@@ -203,6 +206,7 @@ public class DecedentDaoImpl implements DecedentDao {
 
 		int meCaseNumberIndex = 0;
 		if (decedent.getMeCaseNumber() != null && !decedent.getMeCaseNumber().isEmpty()) {
+			if (index > 1) sql = sql + ",";
 			sql = sql + " me_case_number=?";
 			meCaseNumberIndex = index;
 			index++;
