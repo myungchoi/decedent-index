@@ -22,7 +22,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.util.List;
 import java.util.Map;
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-01-23T23:26:47.338890-05:00[America/New_York]")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-02-01T15:37:58.752485-05:00[America/New_York]")
 @Api(value = "search", description = "the search API")
 public interface SearchApi {
 

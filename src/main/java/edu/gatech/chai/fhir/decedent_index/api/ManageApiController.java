@@ -84,6 +84,13 @@ public class ManageApiController implements ManageApi {
 		}
     }
 
+    public ResponseEntity<Void> deleteDecedent(@ApiParam(value = "Decedent ID to be deleted",required=true) @PathVariable("id") Integer id) {
+        String accept = request.getHeader("Accept");
+        
+        decedentDao.delete(id);
+    	return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+    
     public ResponseEntity<Decedent> getDecedent(@ApiParam(value = "Get a decedent by ID",required=true) @PathVariable("id") Integer id) {
         String accept = request.getHeader("Accept");
         
