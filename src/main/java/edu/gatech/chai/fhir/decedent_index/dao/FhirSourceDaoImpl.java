@@ -127,6 +127,7 @@ public class FhirSourceDaoImpl implements FhirSourceDao {
 			logger.info("filter data (" + id + ") selected");
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
+			logger.error("Failed to get ("+id+"): "+e.getMessage());
 		}
 
 		return fhirSource;
@@ -144,6 +145,7 @@ public class FhirSourceDaoImpl implements FhirSourceDao {
 			logger.info(fhirSources.size()+" fhirSources selected");
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
+			logger.error("Failed to search by ("+decedentId+"): "+e.getMessage());
 		}
 
 		return fhirSources;
@@ -163,6 +165,7 @@ public class FhirSourceDaoImpl implements FhirSourceDao {
 			logger.info(fhirSources.size() + " filter data obtained");
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
+			logger.error("Failed to search by ("+decedentId+" and "+type+"): "+e.getMessage());
 		}
 
 		return fhirSources;
@@ -183,6 +186,7 @@ public class FhirSourceDaoImpl implements FhirSourceDao {
 			logger.info("fhir source (" + id + ") updated with "+ fhirSource.toString());
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
+			logger.error("Failed to update ("+id+"): "+e.getMessage());
 		}
 
 	}
@@ -197,6 +201,7 @@ public class FhirSourceDaoImpl implements FhirSourceDao {
 			logger.info("fhirSource with decendent ID (" + decedentId + ") deleted");
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
+			logger.error("Failed to delete ("+decedentId+"): "+e.getMessage());
 		}
 		
 	}

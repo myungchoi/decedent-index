@@ -23,7 +23,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.util.List;
 import java.util.Map;
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-01-23T23:26:47.338890-05:00[America/New_York]")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-02-01T16:28:39.039030-05:00[America/New_York]")
 @Api(value = "manage", description = "the manage API")
 public interface ManageApi {
 
@@ -38,6 +38,16 @@ public interface ManageApi {
         consumes = { "application/json" },
         method = RequestMethod.POST)
     ResponseEntity<Void> addDecedent(@ApiParam(value = "Decedent info to add"  )  @Valid @RequestBody Decedent body);
+
+
+    @ApiOperation(value = "delete a decedent", nickname = "deleteDecedent", notes = "", authorizations = {
+        @Authorization(value = "basicAuth")    }, tags={  })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "a decedent deleted"),
+        @ApiResponse(code = 401, message = "Authentication information is missing or invalid") })
+    @RequestMapping(value = "/manage/{id}",
+        method = RequestMethod.DELETE)
+    ResponseEntity<Void> deleteDecedent(@ApiParam(value = "Decedent ID to be deleted",required=true) @PathVariable("id") Integer id);
 
 
     @ApiOperation(value = "get a decedent by ID", nickname = "getDecedent", notes = "", response = Decedent.class, authorizations = {
