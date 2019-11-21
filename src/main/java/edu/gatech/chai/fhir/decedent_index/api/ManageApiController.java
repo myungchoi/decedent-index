@@ -57,7 +57,7 @@ public class ManageApiController implements ManageApi {
         if (firstName == null || firstName.isEmpty()) firstName = "NOT_PROVIDED";
         if (gender == null || gender.isEmpty()) gender = "unknown";
         
-        Decedents res = decedentDao.search(meCaseNumber, meOffice, lastName, firstName, null);
+        Decedents res = decedentDao.search(meCaseNumber, meOffice, null, null, null);
         if (res.getCount() > 1) 
         	return new ResponseEntity<Void>(HttpStatus.CONFLICT);
         
